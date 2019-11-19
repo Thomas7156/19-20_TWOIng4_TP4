@@ -1,8 +1,10 @@
 var express = require('express');
 var router = express.Router();
+var API_KEY_IMG = "http://www.omdbapi.com/?t=inception&apikey=e0f4f716";
+var API_KEY = "http://img.omdbapi.com/?t=inception&apikey=e0f4f716"
 
 let films = [{
-  id: "1",
+  id: "0",
   movie: "Terminator",
   yearOfRelease: 1984,
   duration: 120,
@@ -15,6 +17,17 @@ let films = [{
 //Read all using GET
 router.get('/', (req, res) => {
   res.status(200).json({ films });
+});
+
+//Read one using GET
+router.get('/:id', (req, res) => {
+  const { id } = req.params;
+  const film = _.find(films, ["id", id]);
+
+  res.status(200).json({
+    message: 'Film found!',
+    films
+  });
 });
 
 //Add using PUT
