@@ -1,7 +1,12 @@
 var express = require('express');
 var router = express.Router();
-var API_KEY_IMG = "http://www.omdbapi.com/?t=inception&apikey=e0f4f716";
-var API_KEY = "http://img.omdbapi.com/?t=inception&apikey=e0f4f716"
+var API_KEY = "e0f4f716";
+var API_IMG = "http://www.omdbapi.com/";
+var API_URL = "http://img.omdbapi.com/";
+const axios = require('axios');
+
+//Example of request
+//"http://img.omdbapi.com/?t=inception&apikey=e0f4f716"
 
 let films = [{
   id: "0",
@@ -31,15 +36,39 @@ router.get('/:id', (req, res) => {
 });
 
 //Add using PUT
-router.put('/', (req, res) => {
-  const { film } = req.body;
-  const id = _.uniqueId();
-  films.push({ film, id });
+router.put('/:movie', (req, res) => {
 
-  res.json({
-    message: `Just added ${id}`,
-    films: { film, id }
+  const { title } = req.params;
+
+  axios.get(`${API_URL}?t=${title}&apikey=${API_KEY}`)
+
+  .then((response) => {
+
+    // handle success
+    const id = _.uniqueId();
+
+    films.push({
+      id: id,
+      movie: "Titanic",
+      yearOfRelease: 1984,
+      duration: 120,
+      actors: ["Shwarzi", "Acteur 2 lol"],
+      poster: "img/imagetropcool.png",
+      boxOffice: 74000000,
+      rottenTomatoesScore: 0
+    });
+  })
+
+  .catch((error) => {
+    // handle error
+    console.log(error);
+  })
+
+  .finally(() => {
+    // always executed
+    res.status(200).json({ films });
   });
+
 });
 
 //Update using POST
