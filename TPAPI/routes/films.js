@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var API_KEY = "e0f4f716";
-var API_IMG = "http://www.omdbapi.com/";
-var API_URL = "http://img.omdbapi.com/";
+var API_URL = "http://www.omdbapi.com/";
+var API_IMG = "http://img.omdbapi.com/";
 const axios = require('axios');
 
 //Example of request
@@ -31,18 +31,20 @@ router.get('/:id', (req, res) => {
 
   res.status(200).json({
     message: 'Film found!',
-    films
+    film
   });
 });
 
 //Add using PUT
-router.put('/:movie', (req, res) => {
+router.put('/:title', (req, res) => {
 
   const { title } = req.params;
+  console.log(title);
 
-  axios.get(`${API_URL}?t=${title}&apikey=${API_KEY}`)
+  axios.get(`${API_URL}?apikey=${API_KEY}&t=${title}`)
 
   .then((response) => {
+    //console.log(response);
 
     // handle success
     const id = _.uniqueId();
@@ -88,8 +90,9 @@ router.delete('/:id', (req, res) => {
   const { id } = req.params;
   _.remove(films, ["id", id]);
 
-  res.json({
-    message: `Just removed ${id}`
+  res.status(200).json({
+    message: `Just removed ${id}`,
+    films
   });
 });
 
