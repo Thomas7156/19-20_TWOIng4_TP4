@@ -11,22 +11,12 @@ const _ = require('lodash');
 
 let films = [{
   id: "0",
-  movie: "Terminator",
-  yearOfRelease: 1984,
-  duration: 120,
-  actors: ["Shwarzi", "Acteur 2 lol"],
-  poster: "img/imagetropcool.png",
-  boxOffice: 74000000,
-  rottenTomatoesScore: 0
-},
-{
-  id: "0",
-  movie: "Terminator",
-  yearOfRelease: 1984,
-  duration: 120,
-  actors: ["Shwarzi", "Acteur 2 lol"],
-  poster: "img/imagetropcool.png",
-  boxOffice: 74000000,
+  Title: "Terminator",
+  Year: 1984,
+  Runtime: 120,
+  Actors: ["Shwarzi", "Acteur 2 lol"],
+  Poster: "img/imagetropcool.png",
+  BoxOffice: 74000000,
   rottenTomatoesScore: 0
 }];
 
@@ -40,10 +30,16 @@ router.get('/:id', (req, res) => {
   const { id } = req.params;
   const film = _.find(films, ["id", id]);
 
-  res.status(200).json({
-    message: 'Film found!',
-    film
-  });
+  if(film) {
+    res.status(200).json({
+      message: 'Film found!',
+      film
+    });
+  } else {
+    res.status(404).json({
+      message: 'Film not found!'
+    });
+  }
 });
 
 //Add using PUT
@@ -61,13 +57,13 @@ router.put('/:title', (req, res) => {
 
     films.push({
       id: id,
-      movie: "Titanic",
-      yearOfRelease: 1984,
-      duration: 120,
-      actors: ["Shwarzi", "Acteur 2 lol"],
-      poster: "img/imagetropcool.png",
-      boxOffice: 74000000,
-      rottenTomatoesScore: 0
+      Title: response.data.Title,
+      Year: response.data.Year,
+      Runtime: response.data.Runtime,
+      Actors: [response.data.Actors],
+      Poster: response.data.Poster,
+      BoxOffice: response.data.BoxOffice,
+      rottenTomatoesScore: response.data.Ratings[1].Value
     });
   })
 
@@ -84,14 +80,35 @@ router.put('/:title', (req, res) => {
 });
 
 //Update using POST
-router.post('/:id', (req, res) => {
-  const id = req.params;
-  const { film } = req.body;
+router.post('/:id/:title', (req, res) => {
+  const id = req.params.id;
+  const newTitle = req.params.title;
+  //const { film } = req.body;
   const filmToUpdate = _.find(films, ["id", id]);
-  filmToUpdate.film = film;
 
-  res.json({
-    message : `Just updated ${id} with ${film}`
+  axios.get(`${API_URL}?apikey=${API_KEY}&t=${newTitle}`)
+
+  .then((response) => {
+
+    filmToUpdate.Title = response.data.Title;
+    filmToUpdate.Year = response.data.Year;
+    filmToUpdate.Runtime = response.data.Runtime;
+    filmToUpdate.Actors = [response.data.Actors];
+    filmToUpdate.Poster = response.data.Poster;
+    filmToUpdate.BoxOffice = response.data.BoxOffice;
+    filmToUpdate.rottenTomatoesScore = response.data.Ratings[1].Value;
+  })
+
+  .catch((error) => {
+    // handle error
+    console.log(error);
+  })
+
+  .finally(() => {
+    // always executed
+    res.status(200).json({ message : `Just updated ${id} with ${newTitle}`,
+      filmToUpdate
+    });
   });
 });
 
