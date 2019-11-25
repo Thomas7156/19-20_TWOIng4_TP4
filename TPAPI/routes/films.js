@@ -4,11 +4,22 @@ var API_KEY = "e0f4f716";
 var API_URL = "http://www.omdbapi.com/";
 var API_IMG = "http://img.omdbapi.com/";
 const axios = require('axios');
+const _ = require('lodash');
 
 //Example of request
 //"http://img.omdbapi.com/?t=inception&apikey=e0f4f716"
 
 let films = [{
+  id: "0",
+  movie: "Terminator",
+  yearOfRelease: 1984,
+  duration: 120,
+  actors: ["Shwarzi", "Acteur 2 lol"],
+  poster: "img/imagetropcool.png",
+  boxOffice: 74000000,
+  rottenTomatoesScore: 0
+},
+{
   id: "0",
   movie: "Terminator",
   yearOfRelease: 1984,
@@ -39,7 +50,6 @@ router.get('/:id', (req, res) => {
 router.put('/:title', (req, res) => {
 
   const { title } = req.params;
-  console.log(title);
 
   axios.get(`${API_URL}?apikey=${API_KEY}&t=${title}`)
 
