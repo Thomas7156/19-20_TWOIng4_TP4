@@ -53,10 +53,8 @@ router.put('/:title', (req, res) => {
     //console.log(response);
 
     // handle success
-    const id = _.uniqueId();
-
     films.push({
-      id: id,
+      id: response.data.imdbID,
       Title: response.data.Title,
       Year: response.data.Year,
       Runtime: response.data.Runtime,
